@@ -33,6 +33,7 @@ objects:
     name: egressproxy-${ID}a-allow-policy
     labels:
       egressproxy: "true"
+      egressproxy-allow-policy: "true"
       app: egressproxy-${ID}
       deploymentconfig: egressproxy-${ID}a
 
@@ -121,6 +122,7 @@ objects:
     name: egressproxy-${ID}b-allow-policy
     labels:
       egressproxy: "true"
+      egressproxy-allow-policy: "true"
       app: egressproxy-${ID}
       deploymentconfig: egressproxy-${ID}b
 
