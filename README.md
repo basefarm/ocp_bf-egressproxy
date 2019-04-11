@@ -2,11 +2,6 @@
 
 ## Implement on customer environment
 
-You need access to BF-s GitHub in order to complete these steps. 
-
-These resources will probably be migrated to a public space so it's easier to implement. But for now just your personal "Personal access token". 
-
-
 ### Download templates
 
 root@master1: 
