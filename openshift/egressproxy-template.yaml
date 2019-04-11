@@ -1,0 +1,213 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: egressproxy-template
+objects:
+
+- kind: Service
+  apiVersion: v1
+  metadata:
+    labels:
+      app: egressproxy-${ID}
+      egressproxy: "true"
+    name: egressproxy-${ID}
+  spec:
+    ports:
+    - name: 3128-tcp
+      port: 3128
+      protocol: TCP
+      targetPort: 3128
+    selector:
+      app: egressproxy-${ID}
+    sessionAffinity: None
+    type: ClusterIP
+
+#### egressproxy-${ID}a ####
+
+- kind: ConfigMap
+  apiVersion: v1
+  data:
+    list.txt: |
+      .github.com
+  metadata:
+    name: egressproxy-${ID}a-allow-policy
+    labels:
+      egressproxy: "true"
+      app: egressproxy-${ID}
+      deploymentconfig: egressproxy-${ID}a
+
+- kind: DeploymentConfig
+  apiVersion: apps.openshift.io/v1
+  metadata:
+    labels:
+      app: egressproxy-${ID}
+      egressproxy: "true"
+    name: egressproxy-${ID}a
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: egressproxy-${ID}
+      egressproxy: "true"
+      deploymentconfig: egressproxy-${ID}a
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: egressproxy-${ID}
+          egressproxy: "true"
+          deploymentconfig: egressproxy-${ID}a
+      spec:
+        containers:
+        - name: egressproxy-${ID}a
+          livenessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 3128
+            timeoutSeconds: 1
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 3128
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/squid/allow-domains
+            name: egressproxy-allow-policy
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 45
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: egressproxy-${ID}a-allow-policy
+          name: egressproxy-allow-policy 
+    test: false
+    triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - egressproxy-${ID}a
+        from:
+          kind: ImageStreamTag
+          name: ${IMAGESTREAM_NAME}:${IMAGE_TAG}
+          namespace: ${IMAGESTREAM_NAMESPACE}
+
+#### egressproxy-${ID}b ####
+
+- kind: ConfigMap
+  apiVersion: v1
+  data:
+    list.txt: |
+      .github.com
+  metadata:
+    name: egressproxy-${ID}b-allow-policy
+    labels:
+      egressproxy: "true"
+      app: egressproxy-${ID}
+      deploymentconfig: egressproxy-${ID}b
+
+- kind: DeploymentConfig
+  apiVersion: apps.openshift.io/v1
+  metadata:
+    labels:
+      app: egressproxy-${ID}
+      egressproxy: "true"
+    name: egressproxy-${ID}b
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: egressproxy-${ID}
+      egressproxy: "true"
+      deploymentconfig: egressproxy-${ID}b
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: egressproxy-${ID}
+          egressproxy: "true"
+          deploymentconfig: egressproxy-${ID}b
+      spec:
+        containers:
+        - name: egressproxy-${ID}b
+          livenessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 3128
+            timeoutSeconds: 1
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 3128
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /etc/squid/allow-domains
+            name: egressproxy-allow-policy
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 45
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: egressproxy-${ID}a-allow-policy
+          name: egressproxy-allow-policy 
+    test: false
+    triggers:
+    - type: ConfigChange
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - egressproxy-${ID}b
+        from:
+          kind: ImageStreamTag
+          name: ${IMAGESTREAM_NAME}:${IMAGE_TAG}
+          namespace: ${IMAGESTREAM_NAMESPACE}
+
+parameters:
+- name: ID
+  value: "1"
+  required: true
+- name: IMAGESTREAM_NAME
+  value: bf-squid
+  required: true
+- name: IMAGESTREAM_NAMESPACE
+  value: openshift
+  required: true
+- name: IMAGE_TAG
+  value: latest
+  required: true

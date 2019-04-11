@@ -1,0 +1,36 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: squid-is-template
+objects:
+- kind: ImageStream
+  apiVersion: image.openshift.io/v1
+  metadata:
+    annotations:
+    name: "${NAME}"
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: "${DOCKER_IMAGE_URL}/${DOCKER_IMAGE_REPOSITORY}:${DOCKER_IMAGE_TAG}"
+      generation: 1
+      importPolicy:
+        scheduled: true
+      name: "${DOCKER_IMAGE_TAG}"
+      referencePolicy:
+        type: Source
+parameters:
+- name: NAME
+  value: bf-squid
+  required: true
+- name: DOCKER_IMAGE_URL
+  required: true
+- name: DOCKER_IMAGE_REPOSITORY
+  value: public-repo/bf-squid
+  required: true
+- name: DOCKER_IMAGE_TAG
+  value: latest
+  required: true
