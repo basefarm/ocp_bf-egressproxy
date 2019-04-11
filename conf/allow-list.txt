@@ -1,4 +1,0 @@
-# dstdomain
-
-.basefarm.net
-.basefarm.com

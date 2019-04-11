@@ -1,6 +1,0 @@
-# dstdom_regex
-
-\.cluster\.local$
-\.svc$
-^10\.57\.
-^10\.58\.
