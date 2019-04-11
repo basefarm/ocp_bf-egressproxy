@@ -29,7 +29,7 @@ root@master1:
 
 ```
 server=bf-ocps1-registry.p2.osl.basefarm.net:443
-oc process DOCKER_IMAGE_URL=${server} -f openshift/bf-squid-is-template.yaml | oc create -n openshift -f -
+oc process DOCKER_IMAGE_URL=${server} -f templates/bf-squid-is-template.yaml | oc create -n openshift -f -
 ```
 
 ### Create egressproxy project
@@ -69,7 +69,7 @@ You can set ID to whatever you like. The ID will be part of the names like this:
 - DeploymentConfig: egressproxy-${ID}b
 
 ```
-oc process ID=1 -f openshift/egressproxy-template.yaml | oc create -f -
+oc process ID=1 -f templates/egressproxy-template.yaml | oc create -f -
 ```
 
 ### Setup RBAC
