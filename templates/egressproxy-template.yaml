@@ -28,7 +28,7 @@ objects:
   apiVersion: v1
   data:
     list.txt: |
-      .github.com
+      .basefarm.com
   metadata:
     name: egressproxy-${ID}-a-allow-policy
     labels:
@@ -95,7 +95,7 @@ objects:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
-          - mountPath: /etc/squid/allow-domains
+          - mountPath: /etc/squid/allow-custom-domains
             name: egressproxy-allow-policy
         dnsPolicy: ClusterFirst
         restartPolicy: Always
@@ -126,7 +126,7 @@ objects:
   apiVersion: v1
   data:
     list.txt: |
-      .github.com
+      .basefarm.com
   metadata:
     name: egressproxy-${ID}-b-allow-policy
     labels:
@@ -193,7 +193,7 @@ objects:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
-          - mountPath: /etc/squid/allow-domains
+          - mountPath: /etc/squid/allow-custom-domains
             name: egressproxy-allow-policy
         dnsPolicy: ClusterFirst
         restartPolicy: Always
