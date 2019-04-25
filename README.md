@@ -60,16 +60,16 @@ metadata: {}" | oc apply -n $project -f -
 
 ### Create egressproxy service
 
-You can set ID to whatever you like. The ID will be part of the names like this: 
+You can set NAME to whatever you like. The NAME will be part of the names like this: 
 
-- Service: egressproxy-${ID}
-- ConfigMap: egressproxy-${ID}-a-allow-policy
-- DeploymentConfig: egressproxy-${ID}-a
-- ConfigMap: egressproxy-${ID}-b-allow-policy
-- DeploymentConfig: egressproxy-${ID}-b
+- Service: egressproxy-${NAME}
+- ConfigMap: egressproxy-${NAME}-a-allow-policy
+- DeploymentConfig: egressproxy-${NAME}-a
+- ConfigMap: egressproxy-${NAME}-b-allow-policy
+- DeploymentConfig: egressproxy-${NAME}-b
 
 ```
-oc process ID=default -f templates/egressproxy-template.yaml | oc create -f -
+oc process NAME=default -f templates/egressproxy-template.yaml | oc create -f -
 ```
 
 ### Setup RBAC

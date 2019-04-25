@@ -8,9 +8,9 @@ objects:
   apiVersion: v1
   metadata:
     labels:
-      app: egressproxy-${ID}
+      app: egressproxy-${NAME}
       egressproxy: "true"
-    name: egressproxy-${ID}
+    name: egressproxy-${NAME}
   spec:
     ports:
     - name: 3128-tcp
@@ -18,11 +18,11 @@ objects:
       protocol: TCP
       targetPort: 3128
     selector:
-      app: egressproxy-${ID}
+      app: egressproxy-${NAME}
     sessionAffinity: None
     type: ClusterIP
 
-#### egressproxy-${ID}-a ####
+#### egressproxy-${NAME}-a ####
 
 - kind: ConfigMap
   apiVersion: v1
@@ -30,27 +30,27 @@ objects:
     list.txt: |
       .basefarm.com
   metadata:
-    name: egressproxy-${ID}-a-allow-policy
+    name: egressproxy-${NAME}-a-allow-policy
     labels:
       egressproxy: "true"
       egressproxy-allow-policy: "true"
-      app: egressproxy-${ID}
-      deploymentconfig: egressproxy-${ID}-a
+      app: egressproxy-${NAME}
+      deploymentconfig: egressproxy-${NAME}-a
 
 - kind: DeploymentConfig
   apiVersion: apps.openshift.io/v1
   metadata:
     labels:
-      app: egressproxy-${ID}
+      app: egressproxy-${NAME}
       egressproxy: "true"
-    name: egressproxy-${ID}-a
+    name: egressproxy-${NAME}-a
   spec:
     replicas: 1
     revisionHistoryLimit: 10
     selector:
-      app: egressproxy-${ID}
+      app: egressproxy-${NAME}
       egressproxy: "true"
-      deploymentconfig: egressproxy-${ID}-a
+      deploymentconfig: egressproxy-${NAME}-a
     strategy:
       activeDeadlineSeconds: 21600
       resources: {}
@@ -65,12 +65,12 @@ objects:
       metadata:
         creationTimestamp: null
         labels:
-          app: egressproxy-${ID}
+          app: egressproxy-${NAME}
           egressproxy: "true"
-          deploymentconfig: egressproxy-${ID}-a
+          deploymentconfig: egressproxy-${NAME}-a
       spec:
         containers:
-        - name: egressproxy-${ID}-a
+        - name: egressproxy-${NAME}-a
           env:
           - name: SQUID_CACHE_MGR_MAIL
             value: support@basefarm.com
@@ -105,7 +105,7 @@ objects:
         volumes:
         - configMap:
             defaultMode: 420
-            name: egressproxy-${ID}-a-allow-policy
+            name: egressproxy-${NAME}-a-allow-policy
           name: egressproxy-allow-policy 
     test: false
     triggers:
@@ -114,13 +114,13 @@ objects:
       imageChangeParams:
         automatic: true
         containerNames:
-        - egressproxy-${ID}-a
+        - egressproxy-${NAME}-a
         from:
           kind: ImageStreamTag
           name: ${IMAGESTREAM_NAME}:${IMAGE_TAG}
           namespace: ${IMAGESTREAM_NAMESPACE}
 
-#### egressproxy-${ID}-b ####
+#### egressproxy-${NAME}-b ####
 
 - kind: ConfigMap
   apiVersion: v1
@@ -128,27 +128,27 @@ objects:
     list.txt: |
       .basefarm.com
   metadata:
-    name: egressproxy-${ID}-b-allow-policy
+    name: egressproxy-${NAME}-b-allow-policy
     labels:
       egressproxy: "true"
       egressproxy-allow-policy: "true"
-      app: egressproxy-${ID}
-      deploymentconfig: egressproxy-${ID}-b
+      app: egressproxy-${NAME}
+      deploymentconfig: egressproxy-${NAME}-b
 
 - kind: DeploymentConfig
   apiVersion: apps.openshift.io/v1
   metadata:
     labels:
-      app: egressproxy-${ID}
+      app: egressproxy-${NAME}
       egressproxy: "true"
-    name: egressproxy-${ID}-b
+    name: egressproxy-${NAME}-b
   spec:
     replicas: 1
     revisionHistoryLimit: 10
     selector:
-      app: egressproxy-${ID}
+      app: egressproxy-${NAME}
       egressproxy: "true"
-      deploymentconfig: egressproxy-${ID}-b
+      deploymentconfig: egressproxy-${NAME}-b
     strategy:
       activeDeadlineSeconds: 21600
       resources: {}
@@ -163,12 +163,12 @@ objects:
       metadata:
         creationTimestamp: null
         labels:
-          app: egressproxy-${ID}
+          app: egressproxy-${NAME}
           egressproxy: "true"
-          deploymentconfig: egressproxy-${ID}-b
+          deploymentconfig: egressproxy-${NAME}-b
       spec:
         containers:
-        - name: egressproxy-${ID}-b
+        - name: egressproxy-${NAME}-b
           env:
           - name: SQUID_CACHE_MGR_MAIL
             value: support@basefarm.com
@@ -203,7 +203,7 @@ objects:
         volumes:
         - configMap:
             defaultMode: 420
-            name: egressproxy-${ID}-a-allow-policy
+            name: egressproxy-${NAME}-a-allow-policy
           name: egressproxy-allow-policy 
     test: false
     triggers:
@@ -212,14 +212,14 @@ objects:
       imageChangeParams:
         automatic: true
         containerNames:
-        - egressproxy-${ID}-b
+        - egressproxy-${NAME}-b
         from:
           kind: ImageStreamTag
           name: ${IMAGESTREAM_NAME}:${IMAGE_TAG}
           namespace: ${IMAGESTREAM_NAMESPACE}
 
 parameters:
-- name: ID
+- name: NAME
   value: "default"
   required: true
 - name: IMAGESTREAM_NAME
