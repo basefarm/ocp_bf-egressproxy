@@ -63,13 +63,13 @@ metadata: {}" | oc apply -n $project -f -
 You can set ID to whatever you like. The ID will be part of the names like this: 
 
 - Service: egressproxy-${ID}
-- ConfigMap: egressproxy-${ID}a-allow-policy
-- DeploymentConfig: egressproxy-${ID}a
-- ConfigMap: egressproxy-${ID}b-allow-policy
-- DeploymentConfig: egressproxy-${ID}b
+- ConfigMap: egressproxy-${ID}-a-allow-policy
+- DeploymentConfig: egressproxy-${ID}-a
+- ConfigMap: egressproxy-${ID}-b-allow-policy
+- DeploymentConfig: egressproxy-${ID}-b
 
 ```
-oc process ID=1 -f templates/egressproxy-template.yaml | oc create -f -
+oc process ID=default -f templates/egressproxy-template.yaml | oc create -f -
 ```
 
 ### Setup RBAC

@@ -22,7 +22,7 @@ objects:
     sessionAffinity: None
     type: ClusterIP
 
-#### egressproxy-${ID}a ####
+#### egressproxy-${ID}-a ####
 
 - kind: ConfigMap
   apiVersion: v1
@@ -30,12 +30,12 @@ objects:
     list.txt: |
       .github.com
   metadata:
-    name: egressproxy-${ID}a-allow-policy
+    name: egressproxy-${ID}-a-allow-policy
     labels:
       egressproxy: "true"
       egressproxy-allow-policy: "true"
       app: egressproxy-${ID}
-      deploymentconfig: egressproxy-${ID}a
+      deploymentconfig: egressproxy-${ID}-a
 
 - kind: DeploymentConfig
   apiVersion: apps.openshift.io/v1
@@ -43,14 +43,14 @@ objects:
     labels:
       app: egressproxy-${ID}
       egressproxy: "true"
-    name: egressproxy-${ID}a
+    name: egressproxy-${ID}-a
   spec:
     replicas: 1
     revisionHistoryLimit: 10
     selector:
       app: egressproxy-${ID}
       egressproxy: "true"
-      deploymentconfig: egressproxy-${ID}a
+      deploymentconfig: egressproxy-${ID}-a
     strategy:
       activeDeadlineSeconds: 21600
       resources: {}
@@ -67,10 +67,13 @@ objects:
         labels:
           app: egressproxy-${ID}
           egressproxy: "true"
-          deploymentconfig: egressproxy-${ID}a
+          deploymentconfig: egressproxy-${ID}-a
       spec:
         containers:
-        - name: egressproxy-${ID}a
+        - name: egressproxy-${ID}-a
+          env:
+          - name: SQUID_CACHE_MGR_MAIL
+            value: support@basefarm.com
           livenessProbe:
             failureThreshold: 3
             periodSeconds: 10
@@ -82,7 +85,13 @@ objects:
           ports:
           - containerPort: 3128
             protocol: TCP
-          resources: {}
+          resources:
+            limits:
+              cpu: 150m
+              memory: 512Mi
+            requests:
+              cpu: 50m
+              memory: 256Mi
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
@@ -96,7 +105,7 @@ objects:
         volumes:
         - configMap:
             defaultMode: 420
-            name: egressproxy-${ID}a-allow-policy
+            name: egressproxy-${ID}-a-allow-policy
           name: egressproxy-allow-policy 
     test: false
     triggers:
@@ -105,13 +114,13 @@ objects:
       imageChangeParams:
         automatic: true
         containerNames:
-        - egressproxy-${ID}a
+        - egressproxy-${ID}-a
         from:
           kind: ImageStreamTag
           name: ${IMAGESTREAM_NAME}:${IMAGE_TAG}
           namespace: ${IMAGESTREAM_NAMESPACE}
 
-#### egressproxy-${ID}b ####
+#### egressproxy-${ID}-b ####
 
 - kind: ConfigMap
   apiVersion: v1
@@ -119,12 +128,12 @@ objects:
     list.txt: |
       .github.com
   metadata:
-    name: egressproxy-${ID}b-allow-policy
+    name: egressproxy-${ID}-b-allow-policy
     labels:
       egressproxy: "true"
       egressproxy-allow-policy: "true"
       app: egressproxy-${ID}
-      deploymentconfig: egressproxy-${ID}b
+      deploymentconfig: egressproxy-${ID}-b
 
 - kind: DeploymentConfig
   apiVersion: apps.openshift.io/v1
@@ -132,14 +141,14 @@ objects:
     labels:
       app: egressproxy-${ID}
       egressproxy: "true"
-    name: egressproxy-${ID}b
+    name: egressproxy-${ID}-b
   spec:
     replicas: 1
     revisionHistoryLimit: 10
     selector:
       app: egressproxy-${ID}
       egressproxy: "true"
-      deploymentconfig: egressproxy-${ID}b
+      deploymentconfig: egressproxy-${ID}-b
     strategy:
       activeDeadlineSeconds: 21600
       resources: {}
@@ -156,10 +165,13 @@ objects:
         labels:
           app: egressproxy-${ID}
           egressproxy: "true"
-          deploymentconfig: egressproxy-${ID}b
+          deploymentconfig: egressproxy-${ID}-b
       spec:
         containers:
-        - name: egressproxy-${ID}b
+        - name: egressproxy-${ID}-b
+          env:
+          - name: SQUID_CACHE_MGR_MAIL
+            value: support@basefarm.com
           livenessProbe:
             failureThreshold: 3
             periodSeconds: 10
@@ -171,7 +183,13 @@ objects:
           ports:
           - containerPort: 3128
             protocol: TCP
-          resources: {}
+          resources:
+            limits:
+              cpu: 150m
+              memory: 512Mi
+            requests:
+              cpu: 50m
+              memory: 256Mi
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
@@ -185,7 +203,7 @@ objects:
         volumes:
         - configMap:
             defaultMode: 420
-            name: egressproxy-${ID}a-allow-policy
+            name: egressproxy-${ID}-a-allow-policy
           name: egressproxy-allow-policy 
     test: false
     triggers:
@@ -194,7 +212,7 @@ objects:
       imageChangeParams:
         automatic: true
         containerNames:
-        - egressproxy-${ID}b
+        - egressproxy-${ID}-b
         from:
           kind: ImageStreamTag
           name: ${IMAGESTREAM_NAME}:${IMAGE_TAG}
@@ -202,7 +220,7 @@ objects:
 
 parameters:
 - name: ID
-  value: "1"
+  value: ""
   required: true
 - name: IMAGESTREAM_NAME
   value: bf-squid
