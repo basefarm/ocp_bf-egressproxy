@@ -220,7 +220,7 @@ objects:
 
 parameters:
 - name: ID
-  value: ""
+  value: "default"
   required: true
 - name: IMAGESTREAM_NAME
   value: bf-squid
