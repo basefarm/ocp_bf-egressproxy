@@ -43,6 +43,7 @@ objects:
     labels:
       app: egressproxy-${NAME}
       egressproxy: "true"
+      deploymentconfig: egressproxy-${NAME}-a
     name: egressproxy-${NAME}-a
   spec:
     replicas: 1
@@ -97,6 +98,18 @@ objects:
           volumeMounts:
           - mountPath: /etc/squid/allow-custom-domains
             name: egressproxy-allow-policy
+          affinity:
+            podAntiAffinity: 
+              preferredDuringSchedulingIgnoredDuringExecution: 
+              - weight: 100  
+                podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                    - key: deploymentconfig 
+                      operator: In 
+                      values:
+                      - egressproxy-${NAME}-b
+                  topologyKey: kubernetes.io/hostname
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         schedulerName: default-scheduler
@@ -141,6 +154,7 @@ objects:
     labels:
       app: egressproxy-${NAME}
       egressproxy: "true"
+      deploymentconfig: egressproxy-${NAME}-b
     name: egressproxy-${NAME}-b
   spec:
     replicas: 1
@@ -195,6 +209,18 @@ objects:
           volumeMounts:
           - mountPath: /etc/squid/allow-custom-domains
             name: egressproxy-allow-policy
+          affinity:
+            podAntiAffinity: 
+              preferredDuringSchedulingIgnoredDuringExecution: 
+              - weight: 100  
+                podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                    - key: deploymentconfig 
+                      operator: In 
+                      values:
+                      - egressproxy-${NAME}-a
+                  topologyKey: kubernetes.io/hostname
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         schedulerName: default-scheduler
