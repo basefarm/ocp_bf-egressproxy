@@ -99,16 +99,16 @@ objects:
           - mountPath: /etc/squid/allow-custom-domains
             name: egressproxy-allow-policy
         affinity:
-          podAntiAffinity: 
-            preferredDuringSchedulingIgnoredDuringExecution: 
-            - weight: 100  
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
               podAffinityTerm:
                 labelSelector:
                   matchExpressions:
-                  - key: deploymentconfig 
-                    operator: In 
+                  - key: app
+                    operator: In
                     values:
-                    - egressproxy-${NAME}-b
+                    - egressproxy-${NAME}
                 topologyKey: kubernetes.io/hostname
         dnsPolicy: ClusterFirst
         restartPolicy: Always
@@ -210,16 +210,16 @@ objects:
           - mountPath: /etc/squid/allow-custom-domains
             name: egressproxy-allow-policy
         affinity:
-          podAntiAffinity: 
-            preferredDuringSchedulingIgnoredDuringExecution: 
-            - weight: 100  
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
               podAffinityTerm:
                 labelSelector:
                   matchExpressions:
-                  - key: deploymentconfig 
-                    operator: In 
+                  - key: app
+                    operator: In
                     values:
-                    - egressproxy-${NAME}-a
+                    - egressproxy-${NAME}
                 topologyKey: kubernetes.io/hostname
         dnsPolicy: ClusterFirst
         restartPolicy: Always
